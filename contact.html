@@ -15,7 +15,10 @@
           <img src="assets/images/logo-mark.png" alt="" width="42" height="42">
           <span>Dr. Kristofor Kalvig</span>
         </a>
-        <nav class="site-nav" aria-label="Primary navigation">
+        <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+        <nav id="primary-nav" class="site-nav" aria-label="Primary navigation">
           <a href="index.html">Home</a>
           <a href="about.html">About Dr. Kalvig</a>
           <a href="procedures.html">Procedures</a>
@@ -61,6 +64,9 @@
             <textarea name="message" placeholder="Type your message here..." required></textarea>
           </label>
           <button class="submit-button" type="submit">Submit</button>
+          <!-- Success / error feedback messages (shown via JS) -->
+          <p class="form-success" hidden aria-live="polite">Thank you! Your message has been sent.</p>
+          <p class="form-error" hidden aria-live="assertive">Sorry, something went wrong. Please try again or call us directly.</p>
         </form>
       </section>
 
@@ -81,5 +87,6 @@
       </div>
       <p>&copy;2023 by Dr. Kristofor Kalvig. All Rights Reserved</p>
     </footer>
+    <script src="js/script.js"></script>
   </body>
 </html>
