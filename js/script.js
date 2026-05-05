@@ -80,7 +80,7 @@
         showMessage(successMsg);
         form.reset();
       } else {
-        console.error('Form submission error:', json.error);
+        console.error('Form submission error:', json.message);
         showMessage(errorMsg);
       }
     } catch (err) {

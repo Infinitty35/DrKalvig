@@ -26,11 +26,11 @@ app.post('/contact', async (req, res) => {
   const { name, email, phone, message } = req.body || {};
 
   if (!name || !email || !message) {
-    return res.status(400).json({ error: 'Missing required fields: name, email, message' });
+    return res.status(400).json({ success: false, message: 'Missing required fields: name, email, message' });
   }
 
   if (!isValidEmail(email)) {
-    return res.status(400).json({ error: 'Invalid email address' });
+    return res.status(400).json({ success: false, message: 'Invalid email address' });
   }
 
   try {
@@ -38,7 +38,7 @@ app.post('/contact', async (req, res) => {
     return res.json({ success: true, message: 'Email sent successfully' });
   } catch (err) {
     console.error('Error sending email:', err);
-    return res.status(500).json({ error: 'Failed to send email. Please try again later.' });
+    return res.status(500).json({ success: false, message: 'Failed to send email. Please try again later.' });
   }
 });
 
