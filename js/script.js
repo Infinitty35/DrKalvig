@@ -35,22 +35,17 @@
 
 
 /* ─────────────────────────────────────────
-   2. Contact form — email backend integration
+   2. Contact form — Web3Forms integration
    ─────────────────────────────────────────
-   The form POSTs to the Express server in /server.
-   To run the backend:
-     cd server && npm install && npm start
-   Set EMAIL_USER, APPPASSWORD, and EMAIL_RECIPIENT in server/.env
-   (copy server/.env.example to server/.env and fill in the values).
-
-   Update API_URL below to your deployed server URL in production.
+   The form submits to the Web3Forms API (no backend required).
+   The access_key is appended to the FormData before submission.
    ───────────────────────────────────────── */
 (function initContactForm() {
   const form = document.querySelector('.contact-form');
   if (!form) return;
 
-  // Change this to your deployed backend URL in production
-  const API_URL = 'http://localhost:3001/contact';
+  const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
+  const ACCESS_KEY = 'a55f3b3b-3f80-457a-a13e-2f7ea66f0ddb';
 
   const successMsg = document.querySelector('.form-success');
   const errorMsg   = document.querySelector('.form-error');
@@ -62,21 +57,15 @@
     if (submitBtn) submitBtn.disabled = true;
 
     const data = new FormData(form);
-    const payload = {
-      name:    data.get('name'),
-      email:   data.get('email'),
-      phone:   data.get('phone') || '',
-      message: data.get('message'),
-    };
+    data.append('access_key', ACCESS_KEY);
 
     try {
-      const res  = await fetch(API_URL, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(payload),
+      const res  = await fetch(WEB3FORMS_ENDPOINT, {
+        method: 'POST',
+        body:   data,
       });
       const json = await res.json();
-      if (res.ok && json.success) {
+      if (json.success) {
         showMessage(successMsg);
         form.reset();
       } else {
