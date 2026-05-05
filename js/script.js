@@ -35,51 +35,60 @@
 
 
 /* ─────────────────────────────────────────
-   2. Contact form — Web3Forms integration
+   2. Contact form — email backend integration
    ─────────────────────────────────────────
-   To activate:
-     a) Sign up at https://web3forms.com and get a free Access Key.
-     b) Replace "YOUR_WEB3FORMS_ACCESS_KEY" below with your key.
-     c) The hidden <input name="access_key"> is already in the form markup.
+   The form POSTs to the Express server in /server.
+   To run the backend:
+     cd server && npm install && npm start
+   Set EMAIL_USER, APPPASSWORD, and EMAIL_RECIPIENT in server/.env
+   (copy server/.env.example to server/.env and fill in the values).
+
+   Update API_URL below to your deployed server URL in production.
    ───────────────────────────────────────── */
 (function initContactForm() {
   const form = document.querySelector('.contact-form');
   if (!form) return;
 
-  // --- Web3Forms endpoint ---
-  // Uncomment and set your access key to enable real submissions:
-  // const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
-  // const ACCESS_KEY = 'YOUR_WEB3FORMS_ACCESS_KEY';
+  // Change this to your deployed backend URL in production
+  const API_URL = 'http://localhost:3001/contact';
 
   const successMsg = document.querySelector('.form-success');
   const errorMsg   = document.querySelector('.form-error');
+  const submitBtn  = form.querySelector('.submit-button');
 
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    // Collect form data
+    if (submitBtn) submitBtn.disabled = true;
+
     const data = new FormData(form);
+    const payload = {
+      name:    data.get('name'),
+      email:   data.get('email'),
+      phone:   data.get('phone') || '',
+      message: data.get('message'),
+    };
 
-    // ── Uncomment the block below to send via Web3Forms ──────────────
-    // data.set('access_key', ACCESS_KEY);
-    // try {
-    //   const res  = await fetch(WEB3FORMS_ENDPOINT, { method: 'POST', body: data });
-    //   const json = await res.json();
-    //   if (json.success) {
-    //     showMessage(successMsg);
-    //     form.reset();
-    //   } else {
-    //     showMessage(errorMsg);
-    //   }
-    // } catch (err) {
-    //   console.error('Form error:', err);
-    //   showMessage(errorMsg);
-    // }
-    // ─────────────────────────────────────────────────────────────────
-
-    // Placeholder feedback until Web3Forms is configured
-    showMessage(successMsg);
-    form.reset();
+    try {
+      const res  = await fetch(API_URL, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        showMessage(successMsg);
+        form.reset();
+      } else {
+        console.error('Form submission error:', json.error);
+        showMessage(errorMsg);
+      }
+    } catch (err) {
+      console.error('Form error:', err);
+      showMessage(errorMsg);
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
   });
 
   function showMessage(el) {
