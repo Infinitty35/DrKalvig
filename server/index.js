@@ -12,8 +12,14 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
 }));
 
-// Validate that email is a plausible email address
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Validate that email is a plausible email address (no-regex to avoid ReDoS)
+function isValidEmail(addr) {
+  const at = typeof addr === 'string' ? addr.indexOf('@') : -1;
+  if (at < 1) return false;
+  const domain = addr.slice(at + 1);
+  const dot = domain.lastIndexOf('.');
+  return dot > 0 && dot < domain.length - 1 && !domain.includes('@');
+}
 
 // Contact-form submission endpoint
 app.post('/contact', async (req, res) => {
@@ -23,7 +29,7 @@ app.post('/contact', async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields: name, email, message' });
   }
 
-  if (!EMAIL_RE.test(email)) {
+  if (!isValidEmail(email)) {
     return res.status(400).json({ error: 'Invalid email address' });
   }
 
