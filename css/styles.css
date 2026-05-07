@@ -380,6 +380,10 @@ a:focus-visible {
 .map-section {
   margin: 0 auto;
   max-width: var(--page-width);
+  padding: 0 22px;
+}
+
+.map-frame {
   position: relative;
 }
 
@@ -763,7 +767,8 @@ a:focus-visible {
 
   .hero-media,
   .opening-banner,
-  .page-shell {
+  .page-shell,
+  .map-section {
     padding-left: 16px;
     padding-right: 16px;
   }
