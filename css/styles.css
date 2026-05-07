@@ -385,6 +385,7 @@ a:focus-visible {
 
 .map-section img,
 .wide-map img {
+  height: auto;
   width: 100%;
 }
 
